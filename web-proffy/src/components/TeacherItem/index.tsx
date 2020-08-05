@@ -2,36 +2,51 @@ import React from "react";
 
 import "./styles.css";
 import whatsappIcon from "../../assets/images/icons/whatsapp.svg";
+import api from "../../services/api";
 
-const TeacherItem: React.FC = () => {
+export interface ITeacher {
+  avatar: string;
+  bio: string;
+  cost: number;
+  id: number;
+  name: string;
+  subject: string;
+  whatsapp: string;
+}
+interface ITeacherItem {
+  teacher: ITeacher;
+}
+
+const TeacherItem: React.FC<ITeacherItem> = ({ teacher }) => {
+  async function createNewConnection() {
+    await api.post("connections", {
+      proffy_user_id: teacher.id,
+    });
+  }
   return (
     <article className="teacher-item">
       <header>
-        <img
-          src="https://avatars2.githubusercontent.com/u/53879758?s=460&u=4658453ce742cba23ca4624949e8d4dd521f1513&v=4"
-          alt="Victor Radael"
-        />
+        <img src={teacher.avatar} alt={teacher.name} />
         <div>
-          <strong>Victor Radael</strong>
-          <span>POO</span>
+          <strong>{teacher.name}</strong>
+          <span>{teacher.subject}</span>
         </div>
       </header>
-      <p>
-        Entusiasta das melhores tecnologias de POO.
-        <br />
-        <br />
-        Apaixona por uma pessoa, ou sera que nao?
-      </p>
+      <p>{teacher.bio}</p>
 
       <footer>
         <p>
           Preco/hora
-          <strong>R$ 80,00</strong>
+          <strong>R$ {teacher.cost},00</strong>
         </p>
-        <button>
+        <a
+          target="_black"
+          onClick={createNewConnection}
+          href={`https://wa.me/${teacher.whatsapp}`}
+        >
           <img src={whatsappIcon} alt="Whatsapp" />
           Entrar em contato
-        </button>
+        </a>
       </footer>
     </article>
   );
